@@ -9,7 +9,7 @@
 		<RepositoryType>git</RepositoryType>
 		<RepositoryUrl>https://github.com/MoondanceZ/Yarkool.SwaggerUI.git</RepositoryUrl>
 		<RootNamespace>Yarkool.SwaggerUI</RootNamespace>
-		<Version>0.0.1</Version>
+		<Version>0.0.2</Version>
 		<Authors>Yarkool;MoondanceZ</Authors>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<IsPackable>true</IsPackable>
