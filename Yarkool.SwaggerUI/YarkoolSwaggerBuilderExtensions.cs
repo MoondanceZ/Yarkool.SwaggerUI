@@ -9,7 +9,7 @@ public static class YarkoolSwaggerBuilderExtensions
     /// <summary>
     /// Register the Swagger middleware with provided options
     /// </summary>
-    public static IApplicationBuilder UseYarkoolSwagger(this IApplicationBuilder app, Action<YarkoolSwaggerUIOptions> setupSwaggerUIAction = null)
+    public static IApplicationBuilder UseYarkoolSwaggerUI(this IApplicationBuilder app, Action<YarkoolSwaggerUIOptions> setupSwaggerUIAction = null)
     {
         var swaggerUiOptions = app.ApplicationServices.GetRequiredService<IOptions<YarkoolSwaggerUIOptions>>().Value ?? new YarkoolSwaggerUIOptions();
         setupSwaggerUIAction?.Invoke(swaggerUiOptions);
