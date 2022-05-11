@@ -1,5 +1,8 @@
 Yarkool.SwaggerUI
 
+![image](https://user-images.githubusercontent.com/11675776/167785105-50f9ca51-6e46-442d-b9bc-b0a07c0ff03e.png)
+
+
 ```C#
 //Add swagger
 builder.Services.AddSwaggerGen(options =>
