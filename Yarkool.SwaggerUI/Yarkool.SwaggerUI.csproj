@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Description>Yarkool swaggerui middleware</Description>
+		<PackageTags>swagger;documentation;discovery;help;webapi;aspnet;aspnetcore</PackageTags>
+		<PackageProjectUrl>https://github.com/MoondanceZ/Yarkool.SwaggerUI.git</PackageProjectUrl>
+		<RepositoryType>git</RepositoryType>
+		<RepositoryUrl>https://github.com/MoondanceZ/Yarkool.SwaggerUI.git</RepositoryUrl>
+		<RootNamespace>Yarkool.SwaggerUI</RootNamespace>
+		<Version>0.0.1</Version>
+		<Authors>Yarkool;MoondanceZ</Authors>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<Copyright>Apache License 2.0</Copyright>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="6.3.1" />
+		<PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.3.1" />
+		<PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.3.1" />
+	</ItemGroup>
+	
+	<PropertyGroup>
+		<IncludeSymbols>true</IncludeSymbols>
+		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+		<PublishRepositoryUrl>true</PublishRepositoryUrl>
+		<EmbedUntrackedSources>true</EmbedUntrackedSources>
+		<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<EmbeddedResource Include="SwaggerUI/**/*" />
+	</ItemGroup>
+
+</Project>
