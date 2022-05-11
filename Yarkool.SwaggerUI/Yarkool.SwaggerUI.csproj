@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
@@ -12,7 +12,8 @@
 		<Version>0.0.1</Version>
 		<Authors>Yarkool;MoondanceZ</Authors>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<Copyright>Apache License 2.0</Copyright>
+		<IsPackable>true</IsPackable>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 	</PropertyGroup>
 
 	<ItemGroup>
