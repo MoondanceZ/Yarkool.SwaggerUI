@@ -53,8 +53,7 @@ builder.Services.AddSwaggerGen(options =>
 ```
 
 ```C#
-// app.UseSwagger()
-app.UseYarkoolSwagger(c =>
+app.UseYarkoolSwaggerUI(c =>
 {
     c.SwaggerEndpoint("/v1/swagger.json", "V1 Docs");
 });
