@@ -60,12 +60,12 @@ var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection();
 
 // app.UseSwagger()
 app.UseYarkoolSwaggerUI(c =>
 {
-    c.RoutePrefix = "swagger";
+    c.RoutePrefix = "mdzz";
     c.SwaggerEndpoint("/v1/swagger.json", "V1 Docs");
 });
 

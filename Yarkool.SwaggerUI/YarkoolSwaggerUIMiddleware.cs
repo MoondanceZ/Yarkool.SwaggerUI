@@ -60,9 +60,15 @@ public class YarkoolSwaggerUIMiddleware
             return;
         }
 
-        if (httpMethod == "GET" && !string.IsNullOrEmpty(path) && Regex.IsMatch(path, $"^/?{Regex.Escape(_options.RoutePrefix)}/assets/?"))
+        if (httpMethod == "GET" && !string.IsNullOrEmpty(path) && (Regex.IsMatch(path, $"^/?{Regex.Escape(_options.RoutePrefix)}/assets/?") || Regex.IsMatch(path, $"^/?{Regex.Escape(_options.RoutePrefix)}/favicon.ico?")))
         {
             await _staticFileMiddleware.Invoke(httpContext);
+            return;
+        }
+        
+        if (httpMethod == "GET" && !string.IsNullOrEmpty(path) && Regex.IsMatch(path, $"^/?{Regex.Escape(_options.RoutePrefix)}/v3/api-docs/swagger-config$"))
+        {
+            await httpContext.Response.WriteAsync(JsonSerializer.Serialize(_options.ConfigObject, _jsonSerializerOptions));
             return;
         }
 
