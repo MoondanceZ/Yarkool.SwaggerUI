@@ -18,18 +18,29 @@ namespace Yarkool.SwaggerUI;
 public class YarkoolSwaggerUIMiddleware
 {
     private readonly RequestDelegate _next;
+    private readonly ISwaggerProvider _swaggerProvider;
     private readonly YarkoolSwaggerUIOptions _options;
     private readonly StaticFileMiddleware _staticFileMiddleware;
     private readonly SwaggerUIMiddleware _swaggerUiMiddleware;
+    private readonly SwaggerMiddleware _swaggerMiddleware;
     private readonly JsonSerializerOptions _jsonSerializerOptions;
 
-    public YarkoolSwaggerUIMiddleware(RequestDelegate next, IWebHostEnvironment hostingEnv, ILoggerFactory loggerFactory, YarkoolSwaggerUIOptions swaggerUIOptions)
+    public YarkoolSwaggerUIMiddleware(RequestDelegate next, IWebHostEnvironment hostingEnv, ILoggerFactory loggerFactory, ISwaggerProvider swaggerProvider, YarkoolSwaggerUIOptions swaggerUIOptions)
     {
         _next = next;
+        _swaggerProvider = swaggerProvider;
         _options = swaggerUIOptions;
-        
+
         _staticFileMiddleware = CreateStaticFileMiddleware(next, hostingEnv, loggerFactory, swaggerUIOptions);
         _swaggerUiMiddleware = CreateSwaggerUIMiddleware(next, hostingEnv, loggerFactory, swaggerUIOptions);
+
+        var swaggerOptions = new SwaggerOptions();
+        if (!swaggerOptions.RouteTemplate.StartsWith($"{swaggerUIOptions.RoutePrefix}/"))
+        {
+            swaggerOptions.RouteTemplate = swaggerOptions.RouteTemplate.Replace("swagger/", $"{swaggerUIOptions.RoutePrefix}/");
+        }
+        _swaggerMiddleware = CreateSwaggerMiddleware(next, swaggerOptions);
+
         _jsonSerializerOptions = new JsonSerializerOptions
         {
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
@@ -42,7 +53,7 @@ public class YarkoolSwaggerUIMiddleware
     {
         var httpMethod = httpContext.Request.Method;
         var path = httpContext.Request.Path.Value;
-        
+
         if (httpMethod == "GET" && !string.IsNullOrEmpty(path) && Regex.IsMatch(path, $"^/{Regex.Escape(_options.RoutePrefix)}/?index.html$"))
         {
             await RespondWithIndexHtml(httpContext.Response);
@@ -60,10 +71,10 @@ public class YarkoolSwaggerUIMiddleware
             await RespondWithConfig(httpContext.Response);
             return;
         }
-        
+
         if (httpMethod == "GET" && !string.IsNullOrEmpty(path) && Regex.IsMatch(path, $"^/{Regex.Escape(_options.RoutePrefix)}/?.*/swagger.json$"))
         {
-            await _staticFileMiddleware.Invoke(httpContext);
+            await _swaggerMiddleware.Invoke(httpContext, _swaggerProvider);
             return;
         }
 
@@ -74,7 +85,7 @@ public class YarkoolSwaggerUIMiddleware
     {
         await response.WriteAsync(JsonSerializer.Serialize(_options.ConfigObject.Urls, _jsonSerializerOptions));
     }
-    
+
     private async Task RespondWithIndexHtml(HttpResponse response)
     {
         response.StatusCode = 200;
@@ -94,13 +105,13 @@ public class YarkoolSwaggerUIMiddleware
             await response.WriteAsync(htmlBuilder.ToString(), Encoding.UTF8);
         }
     }
-    
+
     private IDictionary<string, string> GetIndexArguments()
     {
         return new Dictionary<string, string>()
         {
-            { "%(DocumentTitle)", _options.DocumentTitle },
-            { "%(HeadContent)", _options.HeadContent },
+            {"%(DocumentTitle)", _options.DocumentTitle},
+            {"%(HeadContent)", _options.HeadContent},
         };
     }
 
@@ -109,14 +120,19 @@ public class YarkoolSwaggerUIMiddleware
         var staticFileOptions = new StaticFileOptions
         {
             RequestPath = string.IsNullOrEmpty(options.RoutePrefix) ? string.Empty : $"/{options.RoutePrefix}",
-            FileProvider = new EmbeddedFileProvider(typeof(YarkoolSwaggerUIMiddleware).GetTypeInfo().Assembly, YarkoolSwaggerUIOptions.EmbeddedFileNamespace),
+            FileProvider = new EmbeddedFileProvider(typeof(YarkoolSwaggerUIMiddleware).GetTypeInfo().Assembly, _options.EmbeddedFileNamespace),
         };
 
         return new StaticFileMiddleware(next, hostingEnv, Options.Create(staticFileOptions), loggerFactory);
     }
-    
+
     private SwaggerUIMiddleware CreateSwaggerUIMiddleware(RequestDelegate next, IWebHostEnvironment hostingEnv, ILoggerFactory loggerFactory, YarkoolSwaggerUIOptions options)
     {
         return new SwaggerUIMiddleware(next, hostingEnv, loggerFactory, options);
+    }
+
+    private SwaggerMiddleware CreateSwaggerMiddleware(RequestDelegate next, SwaggerOptions options)
+    {
+        return new SwaggerMiddleware(next, options);
     }
 }

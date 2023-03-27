@@ -65,6 +65,7 @@ app.UseHttpsRedirection();
 // app.UseSwagger()
 app.UseYarkoolSwaggerUI(c =>
 {
+    c.RoutePrefix = "swagger";
     c.SwaggerEndpoint("/v1/swagger.json", "V1 Docs");
 });
 
