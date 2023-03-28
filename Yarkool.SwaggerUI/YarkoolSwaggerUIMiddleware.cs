@@ -39,6 +39,7 @@ public class YarkoolSwaggerUIMiddleware
         {
             swaggerOptions.RouteTemplate = swaggerOptions.RouteTemplate.Replace("swagger/", $"{swaggerUIOptions.RoutePrefix}/");
         }
+
         _swaggerMiddleware = CreateSwaggerMiddleware(next, swaggerOptions);
 
         _jsonSerializerOptions = new JsonSerializerOptions
@@ -65,16 +66,16 @@ public class YarkoolSwaggerUIMiddleware
             await _staticFileMiddleware.Invoke(httpContext);
             return;
         }
-        
+
         if (httpMethod == "GET" && !string.IsNullOrEmpty(path) && Regex.IsMatch(path, $"^/?{Regex.Escape(_options.RoutePrefix)}/v3/api-docs/swagger-config$"))
         {
-            await httpContext.Response.WriteAsync(JsonSerializer.Serialize(_options.ConfigObject, _jsonSerializerOptions));
+            await RespondWithConfig(httpContext.Response);
             return;
         }
 
         if (httpMethod == "GET" && !string.IsNullOrEmpty(path) && Regex.IsMatch(path, $"^/{Regex.Escape(_options.RoutePrefix)}/swagger-resources$"))
         {
-            await RespondWithConfig(httpContext.Response);
+            await RespondWithConfigUrls(httpContext.Response);
             return;
         }
 
@@ -88,6 +89,11 @@ public class YarkoolSwaggerUIMiddleware
     }
 
     private async Task RespondWithConfig(HttpResponse response)
+    {
+        await response.WriteAsync(JsonSerializer.Serialize(_options.ConfigObject, _jsonSerializerOptions));
+    }
+
+    private async Task RespondWithConfigUrls(HttpResponse response)
     {
         await response.WriteAsync(JsonSerializer.Serialize(_options.ConfigObject.Urls, _jsonSerializerOptions));
     }
