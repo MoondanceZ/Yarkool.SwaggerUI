@@ -65,7 +65,6 @@ var app = builder.Build();
 // app.UseSwagger()
 app.UseYarkoolSwaggerUI(c =>
 {
-    c.RoutePrefix = "mdzz";
     c.SwaggerEndpoint("/v1/swagger.json", "V1 Docs");
 });
 
