@@ -107,7 +107,7 @@ public class YarkoolSwaggerUIMiddleware
         // Inject arguments before writing to response
         if (stream != null)
         {
-            var htmlBuilder = new StringBuilder(new StreamReader(stream).ReadToEnd());
+            var htmlBuilder = new StringBuilder(await new StreamReader(stream).ReadToEndAsync());
 
             foreach (var entry in GetIndexArguments())
             {

@@ -1,13 +1,9 @@
-using Microsoft.AspNetCore.Mvc.Controllers;
-using Microsoft.OpenApi.Models;
-using Yarkool.SwaggerUI;
+Yarkool.SwaggerUI
 
-var builder = WebApplication.CreateBuilder(args);
+![image](https://user-images.githubusercontent.com/11675776/167785105-50f9ca51-6e46-442d-b9bc-b0a07c0ff03e.png)
 
-// Add services to the container.
 
-builder.Services.AddControllers();
-
+```C#
 //Add swagger
 builder.Services.AddSwaggerGen(options =>
 {
@@ -54,27 +50,17 @@ builder.Services.AddSwaggerGen(options =>
         }
     });
 });
+```
 
-
-var app = builder.Build();
-
-// Configure the HTTP request pipeline.
-
-// app.UseHttpsRedirection();
-
-// app.UseSwagger()
+```C#
 app.UseYarkoolSwaggerUI(c =>
 {
-    //c.RoutePrefix = "doc";
     c.SwaggerEndpoint("/v1/swagger.json", "V1 Docs");
 });
-
-app.UseAuthorization();
 
 app.UseRouting().UseEndpoints(endpoints =>
 {
     endpoints.MapControllers();
     endpoints.MapSwagger();
 });
-
-app.Run();
+```
