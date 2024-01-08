@@ -83,9 +83,6 @@ public class YarkoolSwaggerUIMiddleware
 
         if (httpMethod == "GET" && !string.IsNullOrEmpty(path) && Regex.IsMatch(path, $"^/{Regex.Escape(_options.RoutePrefix)}/?.*/swagger.json$"))
         {
-            // await _swaggerMiddleware.Invoke(httpContext, _swaggerProvider);
-            // return;
-
             if (swaggerJsonDic.TryGetValue(path, out var swaggerJson))
             {
                 await RespondWithApplicationJson(httpContext.Response, swaggerJson);
@@ -105,8 +102,7 @@ public class YarkoolSwaggerUIMiddleware
                     using var reader = new StreamReader(memoryStream);
                     swaggerJson = await reader.ReadToEndAsync();
                     swaggerJsonDic.TryAdd(path, swaggerJson);
-            
-                    // 将内存流的内容作为响应
+                    
                     memoryStream.Position = 0;
                     await memoryStream.CopyToAsync(originalResponseBody);
                 }
