@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Collections.Concurrent;
+using System.Reflection;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -17,6 +18,7 @@ namespace Yarkool.SwaggerUI;
 
 public class YarkoolSwaggerUIMiddleware
 {
+    private static ConcurrentDictionary<string, string> swaggerJsonDic = new ConcurrentDictionary<string, string>();
     private readonly RequestDelegate _next;
     private readonly ISwaggerProvider _swaggerProvider;
     private readonly YarkoolSwaggerUIOptions _options;
@@ -81,8 +83,40 @@ public class YarkoolSwaggerUIMiddleware
 
         if (httpMethod == "GET" && !string.IsNullOrEmpty(path) && Regex.IsMatch(path, $"^/{Regex.Escape(_options.RoutePrefix)}/?.*/swagger.json$"))
         {
-            await _swaggerMiddleware.Invoke(httpContext, _swaggerProvider);
-            return;
+            // await _swaggerMiddleware.Invoke(httpContext, _swaggerProvider);
+            // return;
+
+            if (swaggerJsonDic.TryGetValue(path, out var swaggerJson))
+            {
+                await RespondWithApplicationJson(httpContext.Response, swaggerJson);
+                return;
+            }
+            else
+            {
+                using var memoryStream = new MemoryStream();
+                var originalResponseBody = httpContext.Response.Body;
+        
+                try
+                {
+                    httpContext.Response.Body = memoryStream;
+                    await _swaggerMiddleware.Invoke(httpContext, _swaggerProvider);
+                    memoryStream.Position = 0;
+            
+                    using var reader = new StreamReader(memoryStream);
+                    swaggerJson = await reader.ReadToEndAsync();
+                    swaggerJsonDic.TryAdd(path, swaggerJson);
+            
+                    // 将内存流的内容作为响应
+                    memoryStream.Position = 0;
+                    await memoryStream.CopyToAsync(originalResponseBody);
+                }
+                finally
+                {
+                    httpContext.Response.Body = originalResponseBody;
+                }
+        
+                return;
+            }
         }
 
         await _swaggerUiMiddleware.Invoke(httpContext);
@@ -118,12 +152,20 @@ public class YarkoolSwaggerUIMiddleware
         }
     }
 
+    private async Task RespondWithApplicationJson(HttpResponse response, string json)
+    {
+        response.StatusCode = 200;
+        response.ContentType = "application/json;charset=utf-8";
+
+        await response.WriteAsync(json, Encoding.UTF8);
+    }
+
     private IDictionary<string, string> GetIndexArguments()
     {
         return new Dictionary<string, string>()
         {
-            {"%(DocumentTitle)", _options.DocumentTitle},
-            {"%(HeadContent)", _options.HeadContent},
+            { "%(DocumentTitle)", _options.DocumentTitle },
+            { "%(HeadContent)", _options.HeadContent },
         };
     }
 
