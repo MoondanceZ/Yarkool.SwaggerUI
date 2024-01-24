@@ -4,17 +4,17 @@ namespace Yarkool.Example.Api.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    [ApiExplorerSettings(GroupName = "v1")]
-    public class WeatherForecastController : ControllerBase
+    [ApiExplorerSettings(GroupName = "v2")]
+    public class WeatherForecastV2Controller : ControllerBase
     {
         private static readonly string[] Summaries = new[]
         {
         "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
     };
 
-        private readonly ILogger<WeatherForecastController> _logger;
+        private readonly ILogger<WeatherForecastV2Controller> _logger;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger)
+        public WeatherForecastV2Controller(ILogger<WeatherForecastV2Controller> logger)
         {
             _logger = logger;
         }

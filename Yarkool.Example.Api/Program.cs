@@ -12,6 +12,7 @@ builder.Services.AddControllers();
 builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo { Title = "API V1", Version = "v1" });
+    options.SwaggerDoc("v2", new OpenApiInfo { Title = "API V2", Version = "v2" });
     options.AddServer(new OpenApiServer()
     {
         Url = "",
@@ -67,6 +68,7 @@ app.UseYarkoolSwaggerUI(c =>
 {
     //c.RoutePrefix = "doc";
     c.SwaggerEndpoint("/v1/swagger.json", "V1 Docs");
+    c.SwaggerEndpoint("/v2/swagger.json", "V2 Docs");
 });
 
 app.UseAuthorization();
