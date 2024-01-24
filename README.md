@@ -61,6 +61,5 @@ app.UseYarkoolSwaggerUI(c =>
 app.UseRouting().UseEndpoints(endpoints =>
 {
     endpoints.MapControllers();
-    endpoints.MapSwagger();
 });
 ```

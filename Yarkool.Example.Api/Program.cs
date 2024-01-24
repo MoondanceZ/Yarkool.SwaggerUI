@@ -76,7 +76,6 @@ app.UseAuthorization();
 app.UseRouting().UseEndpoints(endpoints =>
 {
     endpoints.MapControllers();
-    endpoints.MapSwagger();
 });
 
 app.Run();
