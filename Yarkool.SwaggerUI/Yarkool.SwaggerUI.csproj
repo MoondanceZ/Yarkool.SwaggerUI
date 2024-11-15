@@ -11,7 +11,7 @@
 		<RepositoryUrl>https://github.com/MoondanceZ/Yarkool.SwaggerUI.git</RepositoryUrl>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<RootNamespace>Yarkool.SwaggerUI</RootNamespace>
-		<Version>0.0.10</Version>
+		<Version>0.0.11</Version>
 		<Authors>Yarkool;MoondanceZ</Authors>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<IsPackable>true</IsPackable>
